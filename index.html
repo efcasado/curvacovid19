@@ -36,7 +36,9 @@
       $(document).ready(function(e) {
           $.getJSON( "data/covid19.json")
               .done(function(data){
-                  console.log(data);
+                  var allRecords = data.records;
+                  var spanishRecords = allRecords.filter(function(record) {return record.countryterritoryCode === "ESP"} );
+                  console.log(spanishRecords);
               })
               .fail(function(jqxhr, status, error){
                   var err = textStatus + ", " + error;
