@@ -33,28 +33,18 @@
 
 
     <script>
-      alert("AAA");
-
-      $.ajax({
-          headers: { "Accept": "application/json"},
-          type: 'GET',
-          url: 'https://opendata.ecdc.europa.eu/covid19/casedistribution/json',
-          crossDomain: true,
-          beforeSend: function(xhr){
-              xhr.withCredentials = true;
-          },
-          success: function(data, textStatus, request){
-              console.log(data);
-          },
-          error: function (xhr, status) {
-              alert('error');
-          }
-
+      $(document).ready(function(e) {
+          $.getJSON( "data/covid19.json")
+              .done(function(data){
+                  console.log(data);
+              })
+              .fail(function(jqxhr, status, error){
+                  var err = textStatus + ", " + error;
+                  console.log( "Request Failed: " + err );
+              })
       });
-      
-      alert("BBB");
-      
     </script>
+
     <!-- Chart code -->
     <script>
       am4core.ready(function() {
