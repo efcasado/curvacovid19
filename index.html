@@ -98,49 +98,71 @@
               chart.responsive.enabled = true;
           });              
       }
+
+      function drop_until(data, func, drop = true, acc = []) {
+          if(data && data.length) {
+              var record = data.pop();
+              
+              if(drop) {
+                  // Still waiting for 'until condition'
+                  if(func(record)) {
+                      // Add current element to the accumulator and set drop to false
+                      acc.push(record);
+                      return drop_until(data, func, false, acc);
+                  } else {
+                      return drop_until(data, func, true, acc);
+                  }
+              } else {
+                  acc.push(record);
+                  return drop_until(data, func, drop, acc);
+              }
+          } else {
+              return acc;
+          }
+      }
           
       $(document).ready(function(e) {
           $.getJSON( "data/covid19.json")
               .done(function(data){
                   // var allRecords = [
-                  //     {
-                  //         "dateRep": "01/04/2020",
-                  //         "day": "1",
-                  //         "month": "4",
-                  //         "year": "2020",
-                  //         "cases": "8102",
-                  //         "deaths": "950",
-                  //         "countriesAndTerritories": "Spain",
-                  //         "geoId": "ES",
-                  //         "countryterritoryCode": "ESP",
-                  //         "popData2018": "46723749"
-                  //     },
-                  //     {
-                  //         "dateRep": "02/04/2020",
-                  //         "day": "2",
-                  //         "month": "4",
-                  //         "year": "2020",
-                  //         "cases": "7719",
-                  //         "deaths": "864",
-                  //         "countriesAndTerritories": "Spain",
-                  //         "geoId": "ES",
-                  //         "countryterritoryCode": "ESP",
-                  //         "popData2018": "46723749"
-                  //     },
-                  //     {
-                  //         "dateRep": "04/04/2020",
-                  //         "day": "4",
-                  //         "month": "4",
-                  //         "year": "2020",
-                  //         "cases": "7472",
-                  //         "deaths": "932",
-                  //         "countriesAndTerritories": "Spain",
-                  //         "geoId": "ES",
-                  //         "countryterritoryCode": "ESP",
-                  //         "popData2018": "46723749"
-                  //     }
-                  // ];
-                  
+                  //      {
+                  //          "dateRep": "01/04/2020",
+                  //          "day": "1",
+                  //          "month": "4",
+                  //          "year": "2020",
+                  //          "cases": "8102",
+                  //          "deaths": "950",
+                  //          "countriesAndTerritories": "Spain",
+                  //          "geoId": "ES",
+                  //          "countryterritoryCode": "ESP",
+                  //          "popData2018": "46723749"
+                  //      },
+                  //      {
+                  //          "dateRep": "02/04/2020",
+                  //          "day": "2",
+                  //          "month": "4",
+                  //          "year": "2020",
+                  //          "cases": "7719",
+                  //          "deaths": "864",
+                  //          "countriesAndTerritories": "Spain",
+                  //          "geoId": "ES",
+                  //          "countryterritoryCode": "ESP",
+                  //          "popData2018": "46723749"
+                  //      },
+                  //      {
+                  //          "dateRep": "04/04/2020",
+                  //          "day": "4",
+                  //          "month": "4",
+                  //          "year": "2020",
+                  //          "cases": "7472",
+                  //          "deaths": "932",
+                  //          "countriesAndTerritories": "Spain",
+                  //          "geoId": "ES",
+                  //          "countryterritoryCode": "ESP",
+                  //          "popData2018": "46723749"
+                  //      }
+                  //  ];
+
                   var allRecords = data.records;
                   var spanishRecords = allRecords
                       .filter(function(record) {return record.countryterritoryCode === "ESP"} )
@@ -153,14 +175,17 @@
                               "population": record.popData2018
                           }
                       } );
+                 spanishRecords = drop_until(spanishRecords, function(record) { return record.cases >= 500 });
 
+
+                  spanishCases = drop_until(spanishCases, function(record) { return record });
                   var spanishCases = spanishRecords.map(function(record) {
                       return {
                           "date": record.date,
                           "value": record.cases,
                       }
                   });
-;
+
                   var spanishDeaths = spanishRecords.map(function(record) {
                       return {
                           "date": record.date,
@@ -174,14 +199,16 @@
                           "value": (record.cases / record.population) * 1000000
                       }
                   });
-;
+
                   var spanishDeathsPerMillion = spanishRecords.map(function(record) {
                       return {
                           "date": record.date,
                           "value": (record.deaths / record.population) * 1000000
                       }
                   });
-                  
+
+
+      
                   plot(spanishCases, "caseschart");
                   plot(spanishDeaths, "deathschart");
                   plot(spanishCasesPerMillion, "casespermillionchart");
