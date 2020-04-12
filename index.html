@@ -19,7 +19,7 @@
           font-size:6vw;
       }
       .chart {
-          width: 760px;
+          width: 100%;
           height: 500px;
       }
     </style>
@@ -83,14 +83,60 @@
               chart.cursor.xAxis = dateAxis;
               chart.cursor.snapToSeries = series;
                       
-              dateAxis.start = 0.79;
-              dateAxis.keepSelection = true;
+              //dateAxis.start = 0.79;
+              //dateAxis.keepSelection = true;
+
+              // Disable zoom
+              chart.zoomOutButton.disabled = true;
+              chart.maxZoomLevel = 1;
+
+              // Enable responsive charts
+              chart.responsive.enabled = true;
           });              
       }
           
       $(document).ready(function(e) {
           $.getJSON( "data/covid19.json")
               .done(function(data){
+                  // var allRecords = [
+                  //     {
+                  //         "dateRep": "01/04/2020",
+                  //         "day": "1",
+                  //         "month": "4",
+                  //         "year": "2020",
+                  //         "cases": "8102",
+                  //         "deaths": "950",
+                  //         "countriesAndTerritories": "Spain",
+                  //         "geoId": "ES",
+                  //         "countryterritoryCode": "ESP",
+                  //         "popData2018": "46723749"
+                  //     },
+                  //     {
+                  //         "dateRep": "02/04/2020",
+                  //         "day": "2",
+                  //         "month": "4",
+                  //         "year": "2020",
+                  //         "cases": "7719",
+                  //         "deaths": "864",
+                  //         "countriesAndTerritories": "Spain",
+                  //         "geoId": "ES",
+                  //         "countryterritoryCode": "ESP",
+                  //         "popData2018": "46723749"
+                  //     },
+                  //     {
+                  //         "dateRep": "04/04/2020",
+                  //         "day": "4",
+                  //         "month": "4",
+                  //         "year": "2020",
+                  //         "cases": "7472",
+                  //         "deaths": "932",
+                  //         "countriesAndTerritories": "Spain",
+                  //         "geoId": "ES",
+                  //         "countryterritoryCode": "ESP",
+                  //         "popData2018": "46723749"
+                  //     }
+                  // ];
+                  
                   var allRecords = data.records;
                   var spanishRecords = allRecords
                       .filter(function(record) {return record.countryterritoryCode === "ESP"} )
@@ -136,7 +182,6 @@
                   plot(spanishDeaths, "deathschart");
                   plot(spanishCasesPerMillion, "casespermillionchart");
                   plot(spanishDeathsPerMillion, "deathspermillionchart");
-
               } );
       });
     </script>
