@@ -99,7 +99,8 @@
                               "country": record.geoId,
                               "date": record.dateRep,
                               "cases": record.cases,
-                              "deaths": record.deaths
+                              "deaths": record.deaths,
+                              "population": record.popData2018
                           }
                       } );
 
@@ -116,9 +117,26 @@
                           "value": record.deaths,
                       }
                   });
+
+                  var spanishCasesPerMillion = spanishRecords.map(function(record) {
+                      return {
+                          "date": record.date,
+                          "value": (record.cases / record.population) * 1000000
+                      }
+                  });
+;
+                  var spanishDeathsPerMillion = spanishRecords.map(function(record) {
+                      return {
+                          "date": record.date,
+                          "value": (record.deaths / record.population) * 1000000
+                      }
+                  });
                   
                   plot(spanishCases, "caseschart");
                   plot(spanishDeaths, "deathschart");
+                  plot(spanishCasesPerMillion, "casespermillionchart");
+                  plot(spanishDeathsPerMillion, "deathspermillionchart");
+
               } );
       });
     </script>
@@ -128,14 +146,22 @@
       <h1><span class="color1">CURVA</span> <span class="color2">COVID-19</span></h1>
       <div id="charts">
         <div>
-          <h2>Infecciones</h2>
+          <h2><span class="color1">Infecciones</span> <span class="color2">(Absolutas)</span></h2>
           <div class="chart" id="caseschart"></div>
         </div>
         <div>
-          <h2>Muertes</h2>
+          <h2><span class="color1">Muertes</span> <span class="color2">(Absolutas)</span></h2>
           <div class="chart" id="deathschart"></div>
+        </div>
+        <div>
+          <h2><span class="color1">Infecciones</span> <span class="color2">(Por Millon de Habitantes)</span></h2>
+          <div class="chart" id="casespermillionchart"></div>
+        </div>
+        <div>
+          <h2><span class="color1">Muertes</span> <span class="color2">(Por Millon de Habitantes)</span></h2>
+          <div class="chart" id="deathspermillionchart"></div>
         </div>
       </div>
     </div>
-</body>
+  </body>
 </html>
