@@ -168,7 +168,7 @@
 
                   var countries = ["ES", "IT"];
                   var xyz = countries.map(function(country) {
-                      allRecords.filter(function(record) {return record.geoId === country} )
+                      return allRecords.filter(function(record) {return record.geoId === country} )
                       .map(function(record) {
                           return {
                               "country": record.geoId,
