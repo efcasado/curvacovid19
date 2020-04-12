@@ -168,18 +168,20 @@
 
                   var countries = ["ES", "IT"];
                   var xyz = countries.map(function(country) {
-                      return allRecords.filter(function(record) {return record.geoId === country} )
-                      .map(function(record) {
-                          return {
-                              "country": record.geoId,
-                              "date": record.dateRep,
-                              "cases": record.cases,
-                              "casesPerMillion": (record.cases / record.popData2018) * 1000000,
-                              "deaths": record.deaths,
-                              "deathsPerMillion": (record.deaths / record.popData2018) * 1000000,
-                              "population": record.popData2018
-                          }
-                      });
+                      var countryData =  allRecords
+                          .filter(function(record) {return record.geoId === country} )
+                          .map(function(record) {
+                              return {
+                                  "country": record.geoId,
+                                  "date": record.dateRep,
+                                  "cases": record.cases,
+                                  "casesPerMillion": (record.cases / record.popData2018) * 1000000,
+                                  "deaths": record.deaths,
+                                  "deathsPerMillion": (record.deaths / record.popData2018) * 1000000,
+                                  "population": record.popData2018
+                              }
+                          });
+                      return drop_until(countryData, function(record) { return record.cases >= 500 });
                   });
 
                   console.log(xyz);
