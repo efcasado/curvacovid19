@@ -18,7 +18,7 @@
           text-align: center;
           font-size:6vw;
       }
-      #chartdiv {
+      .chart {
           width: 760px;
           height: 500px;
       }
@@ -33,6 +33,61 @@
 
 
     <script>
+      function plot(data, name){
+          am4core.ready(function() {
+              // Themes begin
+              am4core.useTheme(am4themes_kelly);
+              am4core.useTheme(am4themes_animated);
+              // Themes end
+                      
+              // Create cases chart instance
+              var chart = am4core.create(name, am4charts.XYChart);
+              chart.data = data;
+                      
+              // Set input format for the dates
+              chart.dateFormatter.inputDateFormat = "dd/MM/yyyy";
+                      
+              // Create axes
+              var dateAxis = chart.xAxes.push(new am4charts.DateAxis());
+              var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+                      
+              // Create series
+              var series = chart.series.push(new am4charts.LineSeries());
+              series.dataFields.valueY = "value";
+              series.dataFields.dateX = "date";
+              series.tooltipText = "{value}"
+              series.strokeWidth = 2;
+              series.minBulletDistance = 15;
+                      
+              // Drop-shaped tooltips
+              series.tooltip.background.cornerRadius = 20;
+              series.tooltip.background.strokeOpacity = 0;
+              series.tooltip.pointerOrientation = "vertical";
+              series.tooltip.label.minWidth = 40;
+              series.tooltip.label.minHeight = 40;
+              series.tooltip.label.textAlign = "middle";
+              series.tooltip.label.textValign = "middle";
+              
+              // Make bullets grow on hover
+              var bullet = series.bullets.push(new am4charts.CircleBullet());
+              bullet.circle.strokeWidth = 2;
+              bullet.circle.radius = 4;
+              bullet.circle.fill = am4core.color("#fff");
+                      
+              var bullethover = bullet.states.create("hover");
+              bullethover.properties.scale = 1.3;
+              
+              // Make a panning cursor
+              chart.cursor = new am4charts.XYCursor();
+              chart.cursor.behavior = "panXY";
+              chart.cursor.xAxis = dateAxis;
+              chart.cursor.snapToSeries = series;
+                      
+              dateAxis.start = 0.79;
+              dateAxis.keepSelection = true;
+          });              
+      }
+          
       $(document).ready(function(e) {
           $.getJSON( "data/covid19.json")
               .done(function(data){
@@ -48,68 +103,39 @@
                           }
                       } );
 
-                  am4core.ready(function() {
-                      // Themes begin
-                      am4core.useTheme(am4themes_kelly);
-                      am4core.useTheme(am4themes_animated);
-                      // Themes end
-                      
-                      // Create chart instance
-                      var chart = am4core.create("chartdiv", am4charts.XYChart);
-                      chart.data = spanishRecords;
-                      
-                      // Set input format for the dates
-                      chart.dateFormatter.inputDateFormat = "dd/MM/yyyy";
-                      
-                      // Create axes
-                      var dateAxis = chart.xAxes.push(new am4charts.DateAxis());
-                      var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
-                      
-                      // Create series
-                      var series = chart.series.push(new am4charts.LineSeries());
-                      series.dataFields.valueY = "cases";
-                      series.dataFields.dateX = "date";
-                      series.tooltipText = "{cases}"
-                      series.strokeWidth = 2;
-                      series.minBulletDistance = 15;
-                      
-                      // Drop-shaped tooltips
-                      series.tooltip.background.cornerRadius = 20;
-                      series.tooltip.background.strokeOpacity = 0;
-                      series.tooltip.pointerOrientation = "vertical";
-                      series.tooltip.label.minWidth = 40;
-                      series.tooltip.label.minHeight = 40;
-                      series.tooltip.label.textAlign = "middle";
-                      series.tooltip.label.textValign = "middle";
-                      
-                      // Make bullets grow on hover
-                      var bullet = series.bullets.push(new am4charts.CircleBullet());
-                      bullet.circle.strokeWidth = 2;
-                      bullet.circle.radius = 4;
-                      bullet.circle.fill = am4core.color("#fff");
-                      
-                      var bullethover = bullet.states.create("hover");
-                      bullethover.properties.scale = 1.3;
-                      
-                      // Make a panning cursor
-                      chart.cursor = new am4charts.XYCursor();
-                      chart.cursor.behavior = "panXY";
-                      chart.cursor.xAxis = dateAxis;
-                      chart.cursor.snapToSeries = series;
-                      
-                      dateAxis.start = 0.79;
-                      dateAxis.keepSelection = true;
+                  var spanishCases = spanishRecords.map(function(record) {
+                      return {
+                          "date": record.date,
+                          "value": record.cases,
+                      }
                   });
-              })
-              .fail(function(jqxhr, status, error){
-                  var err = textStatus + ", " + error;
-                  console.log( "Request Failed: " + err );
-              });
+;
+                  var spanishDeaths = spanishRecords.map(function(record) {
+                      return {
+                          "date": record.date,
+                          "value": record.deaths,
+                      }
+                  });
+                  
+                  plot(spanishCases, "caseschart");
+                  plot(spanishDeaths, "deathschart");
+              } );
       });
     </script>
   </head>
   <body>
-    <h1><span class="color1">CURVA</span> <span class="color2">COVID-19</span></h1>
-    <div id="chartdiv"></div>
+    <div id="content">
+      <h1><span class="color1">CURVA</span> <span class="color2">COVID-19</span></h1>
+      <div id="charts">
+        <div>
+          <h2>Infecciones</h2>
+          <div class="chart" id="caseschart"></div>
+        </div>
+        <div>
+          <h2>Muertes</h2>
+          <div class="chart" id="deathschart"></div>
+        </div>
+      </div>
+    </div>
 </body>
 </html>
