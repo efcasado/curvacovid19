@@ -165,6 +165,25 @@
                   //  ];
 
                   var allRecords = data.records;
+
+                  var countries = ["ES", "IT"];
+                  var xyz = countries.map(function(country) {
+                      allRecords.filter(function(record) {return record.geoId === country} )
+                      .map(function(record) {
+                          return {
+                              "country": record.geoId,
+                              "date": record.dateRep,
+                              "cases": record.cases,
+                              "casesPerMillion": (record.cases / record.popData2018) * 1000000,
+                              "deaths": record.deaths,
+                              "deathsPerMillion": (record.deaths / record.popData2018) * 1000000,
+                              "population": record.popData2018
+                          }
+                      });
+                  });
+
+                  console.log(xyz);
+                      
                   var spanishRecords = allRecords
                       .filter(function(record) {return record.countryterritoryCode === "ESP"} )
                       .map(function(record) {
