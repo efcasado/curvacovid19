@@ -2,6 +2,15 @@
 <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Chartist.JS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
+    <script src="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
+    <!-- jQuery -->
+    <script
+      src="https://code.jquery.com/jquery-3.4.1.min.js"
+      integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+      crossorigin="anonymous"></script>
+    <!-- Oxygen Mono font -->
     <link href="https://fonts.googleapis.com/css2?family=Oxygen+Mono&display=swap" rel="stylesheet">
     <style>
       .color1 { color: #2D221C; }
@@ -22,219 +31,7 @@
           padding-left: 10%;
           padding-right: 10%;
       }
-      .chart {
-          width: 100%;
-          height: 25vw;
-      }
-    </style>
-
-    <!-- Resources -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="https://www.amcharts.com/lib/4/core.js"></script>
-    <script src="https://www.amcharts.com/lib/4/charts.js"></script>
-    <script src="https://www.amcharts.com/lib/4/themes/kelly.js"></script>
-    <script src="https://www.amcharts.com/lib/4/themes/animated.js"></script>
-
-
-    <script>
-      function plot(data, name){
-          console.log(data);
-          am4core.ready(function() {
-              // Themes begin
-              am4core.useTheme(am4themes_kelly);
-              am4core.useTheme(am4themes_animated);
-              // Themes end
-                      
-              // Create cases chart instance
-              var chart = am4core.create(name, am4charts.XYChart);
-              //chart.data = data;
-                      
-              // Set input format for the dates
-              chart.dateFormatter.inputDateFormat = "dd/MM/yyyy";
-                      
-              // Create axes
-              var dateAxis = chart.xAxes.push(new am4charts.DateAxis());
-              var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
-                      
-              // Create series
-              var series = data.map(function(countryData) {
-                  var series = chart.series.push(new am4charts.LineSeries());
-                  series.data = countryData;
-                  series.dataFields.valueY = "value";
-                  series.dataFields.dateX = "date";
-                  series.tooltipText = "{value}"
-                  series.strokeWidth = 2;
-                  series.minBulletDistance = 15;
-                      
-                  // Drop-shaped tooltips
-                  series.tooltip.background.cornerRadius = 20;
-                  series.tooltip.background.strokeOpacity = 0;
-                  series.tooltip.pointerOrientation = "vertical";
-                  series.tooltip.label.minWidth = 40;
-                  series.tooltip.label.minHeight = 40;
-                  series.tooltip.label.textAlign = "middle";
-                  series.tooltip.label.textValign = "middle";
-
-                  // Make bullets grow on hover
-                  var bullet = series.bullets.push(new am4charts.CircleBullet());
-                  bullet.circle.strokeWidth = 2;
-                  bullet.circle.radius = 4;
-                  bullet.circle.fill = am4core.color("#fff");
-                      
-                  var bullethover = bullet.states.create("hover");
-                  bullethover.properties.scale = 1.3;
-
-                  return series;
-              });
-
-              // Make a panning cursor
-              chart.cursor = new am4charts.XYCursor();
-              chart.cursor.behavior = "panXY";
-              chart.cursor.xAxis = dateAxis;
-              chart.cursor.snapToSeries = series;
-
-              //dateAxis.start = 0.79;
-              //dateAxis.keepSelection = true;
-
-              // Disable zoom
-              chart.zoomOutButton.disabled = true;
-              chart.maxZoomLevel = 1;
-
-              // Enable responsive charts
-              chart.responsive.enabled = true;
-          });              
-      }
-
-      function drop_until(data, func, drop = true, acc = []) {
-          if(data && data.length) {
-              var record = data.pop();
-              
-              if(drop) {
-                  // Still waiting for 'until condition'
-                  if(func(record)) {
-                      // Add current element to the accumulator and set drop to false
-                      acc.push(record);
-                      return drop_until(data, func, false, acc);
-                  } else {
-                      return drop_until(data, func, true, acc);
-                  }
-              } else {
-                  acc.push(record);
-                  return drop_until(data, func, drop, acc);
-              }
-          } else {
-              return acc;
-          }
-      }
-          
-      $(document).ready(function(e) {
-          $.getJSON( "data/covid19.json")
-              .done(function(data){
-                  // var allRecords = [
-                  //      {
-                  //          "dateRep": "01/04/2020",
-                  //          "day": "1",
-                  //          "month": "4",
-                  //          "year": "2020",
-                  //          "cases": "8102",
-                  //          "deaths": "950",
-                  //          "countriesAndTerritories": "Spain",
-                  //          "geoId": "ES",
-                  //          "countryterritoryCode": "ESP",
-                  //          "popData2018": "46723749"
-                  //      },
-                  //      {
-                  //          "dateRep": "02/04/2020",
-                  //          "day": "2",
-                  //          "month": "4",
-                  //          "year": "2020",
-                  //          "cases": "7719",
-                  //          "deaths": "864",
-                  //          "countriesAndTerritories": "Spain",
-                  //          "geoId": "ES",
-                  //          "countryterritoryCode": "ESP",
-                  //          "popData2018": "46723749"
-                  //      },
-                  //      {
-                  //          "dateRep": "04/04/2020",
-                  //          "day": "4",
-                  //          "month": "4",
-                  //          "year": "2020",
-                  //          "cases": "7472",
-                  //          "deaths": "932",
-                  //          "countriesAndTerritories": "Spain",
-                  //          "geoId": "ES",
-                  //          "countryterritoryCode": "ESP",
-                  //          "popData2018": "46723749"
-                  //      }
-                  //  ];
-
-                  var allRecords = data.records;
-
-                  var countries = ["ES", "IT"];
-                  var xyz = countries.map(function(country) {
-                      var countryData =  allRecords
-                          .filter(function(record) {return record.geoId === country} )
-                          .map(function(record) {
-                              return {
-                                  "country": record.geoId,
-                                  "date": record.dateRep,
-                                  "cases": record.cases,
-                                  "casesPerMillion": (record.cases / record.popData2018) * 1000000,
-                                  "deaths": record.deaths,
-                                  "deathsPerMillion": (record.deaths / record.popData2018) * 1000000,
-                                  "population": record.popData2018
-                              }
-                          });
-                      return drop_until(countryData, function(record) { return record.cases >= 500 });
-                  });
-                  
-                  console.log(xyz);
-
-                  var cases = xyz.map(function(countryData) {
-                      return countryData.map(function(record) {
-                          return {
-                              "date": record.date,
-                              "value": record.cases,
-                          }
-                      });
-                  });
-
-
-                  var deaths = xyz.map(function(countryData) {
-                      return countryData.map(function(record) {
-                          return {
-                              "date": record.date,
-                              "value": record.deaths,
-                          }
-                      });
-                  });
-
-                  var casesPerMillion = xyz.map(function(countryData) {
-                      return countryData.map(function(record) {
-                          return {
-                              "date": record.date,
-                              "value": record.casesPerMillion
-                          }
-                      });
-                  });
-
-                  var deathsPerMillion = xyz.map(function(countryData) {
-                      return countryData.map(function(record) {
-                          return {
-                              "date": record.date,
-                              "value": record.deathsPerMillion
-                          }
-                      });
-                  });
-
-                  plot(cases, "caseschart");
-                  plot(deaths, "deathschart");
-                  plot(casesPerMillion, "casespermillionchart");
-                  plot(deathsPerMillion, "deathspermillionchart");                      
-              } );
-      });
-    </script>
+      </style>
   </head>
   <body>
     <div id="content">
@@ -242,21 +39,165 @@
       <div id="charts">
         <div>
           <h2><span class="color1">Infecciones</span> <span class="color2">(Absolutas)</span></h2>
-          <div class="chart" id="caseschart"></div>
+          <div class="ct-chart" id="caseschart"></div>
         </div>
         <div>
           <h2><span class="color1">Muertes</span> <span class="color2">(Absolutas)</span></h2>
-          <div class="chart" id="deathschart"></div>
+          <div class="ct-chart" id="deathschart"></div>
         </div>
         <div>
           <h2><span class="color1">Infecciones</span> <span class="color2">(Por Millón de Habitantes)</span></h2>
-          <div class="chart" id="casespermillionchart"></div>
+          <div class="ct-chart" id="casespermillionchart"></div>
         </div>
         <div>
           <h2><span class="color1">Muertes</span> <span class="color2">(Por Millón de Habitantes)</span></h2>
-          <div class="chart" id="deathspermillionchart"></div>
+          <div class="ct-chart" id="deathspermillionchart"></div>
         </div>
       </div>
     </div>
   </body>
+  <script type="text/javascript">
+    function plot(data, name){
+        var series = data.map(function(country) {
+            return country.map(function(record) { return record.value });
+        });
+        
+        new Chartist.Line("#" + name, {
+            series: series
+        }, {
+            fullWidth: true,
+            chartPadding: {
+                right: 40
+            }
+        });
+    }
+
+    function drop_until(data, func, drop = true, acc = []) {
+        if(data && data.length) {
+            var record = data.pop();
+            
+            if(drop) {
+                // Still waiting for 'until condition'
+                if(func(record)) {
+                    // Add current element to the accumulator and set drop to false
+                    acc.push(record);
+                    return drop_until(data, func, false, acc);
+                } else {
+                    return drop_until(data, func, true, acc);
+                }
+            } else {
+                acc.push(record);
+                return drop_until(data, func, drop, acc);
+            }
+        } else {
+            return acc;
+        }
+    }
+    
+    $(document).ready(function(e) {
+        $.getJSON( "data/covid19.json")
+            .done(function(data){
+                // var allRecords = [
+                //      {
+                //          "dateRep": "01/04/2020",
+                //          "day": "1",
+                //          "month": "4",
+                //          "year": "2020",
+                //          "cases": "8102",
+                //          "deaths": "950",
+                //          "countriesAndTerritories": "Spain",
+                //          "geoId": "ES",
+                //          "countryterritoryCode": "ESP",
+                //          "popData2018": "46723749"
+                //      },
+                //      {
+                //          "dateRep": "02/04/2020",
+                //          "day": "2",
+                //          "month": "4",
+                //          "year": "2020",
+                //          "cases": "7719",
+                //          "deaths": "864",
+                //          "countriesAndTerritories": "Spain",
+                //          "geoId": "ES",
+                //          "countryterritoryCode": "ESP",
+                //          "popData2018": "46723749"
+                //      },
+                //      {
+                //          "dateRep": "04/04/2020",
+                //          "day": "4",
+                //          "month": "4",
+                //          "year": "2020",
+                //          "cases": "7472",
+                //          "deaths": "932",
+                //          "countriesAndTerritories": "Spain",
+                //          "geoId": "ES",
+                //          "countryterritoryCode": "ESP",
+                //          "popData2018": "46723749"
+                //      }
+                //  ];
+
+                var allRecords = data.records;
+
+                var countries = ["ES", "IT"];
+                var xyz = countries.map(function(country) {
+                    var countryData =  allRecords
+                        .filter(function(record) {return record.geoId === country} )
+                        .map(function(record) {
+                            return {
+                                "country": record.geoId,
+                                "date": record.dateRep,
+                                "cases": record.cases,
+                                "casesPerMillion": (record.cases / record.popData2018) * 1000000,
+                                "deaths": record.deaths,
+                                "deathsPerMillion": (record.deaths / record.popData2018) * 1000000,
+                                "population": record.popData2018
+                            }
+                        });
+                    return drop_until(countryData, function(record) { return record.cases >= 500 });
+                });
+                
+                var cases = xyz.map(function(countryData) {
+                    return countryData.map(function(record) {
+                        return {
+                            "date": record.date,
+                            "value": record.cases,
+                        }
+                    });
+                });
+
+
+                var deaths = xyz.map(function(countryData) {
+                    return countryData.map(function(record) {
+                        return {
+                            "date": record.date,
+                            "value": record.deaths,
+                        }
+                    });
+                });
+
+                var casesPerMillion = xyz.map(function(countryData) {
+                    return countryData.map(function(record) {
+                        return {
+                            "date": record.date,
+                            "value": record.casesPerMillion
+                        }
+                    });
+                });
+
+                var deathsPerMillion = xyz.map(function(countryData) {
+                    return countryData.map(function(record) {
+                        return {
+                            "date": record.date,
+                            "value": record.deathsPerMillion
+                        }
+                    });
+                });
+
+                plot(cases, "caseschart");
+                plot(deaths, "deathschart");
+                plot(casesPerMillion, "casespermillionchart");
+                plot(deathsPerMillion, "deathspermillionchart");                      
+            } );
+    });
+  </script>
 </html>
