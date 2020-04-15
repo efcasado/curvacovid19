@@ -2,9 +2,9 @@
 <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Chartist.JS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
-    <script src="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
+    <!-- Chart.JS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
     <!-- jQuery -->
     <script
       src="https://code.jquery.com/jquery-3.4.1.min.js"
@@ -39,19 +39,19 @@
       <div id="charts">
         <div>
           <h2><span class="color1">Infecciones</span> <span class="color2">(Absolutas)</span></h2>
-          <div class="ct-chart" id="caseschart"></div>
+          <canvas id="caseschart"></canvas>
         </div>
         <div>
           <h2><span class="color1">Muertes</span> <span class="color2">(Absolutas)</span></h2>
-          <div class="ct-chart" id="deathschart"></div>
+          <canvas id="deathschart"></canvas>
         </div>
         <div>
           <h2><span class="color1">Infecciones</span> <span class="color2">(Por Millón de Habitantes)</span></h2>
-          <div class="ct-chart" id="casespermillionchart"></div>
+          <canvas id="casespermillionchart"></canvas>
         </div>
         <div>
           <h2><span class="color1">Muertes</span> <span class="color2">(Por Millón de Habitantes)</span></h2>
-          <div class="ct-chart" id="deathspermillionchart"></div>
+          <canvas id="deathspermillionchart"></canvas>
         </div>
       </div>
     </div>
@@ -59,24 +59,55 @@
   <script type="text/javascript">
     function plot(data, name){
         var series = data.map(function(country) {
-            return country.data.map(function(record) { return record.value });
+            var name = country.name;
+            var data = country.data.map(function(record) { return record.value });
+            return {
+                "label":  name,
+                "data": data,
+                "fill": false
+                
+            };
         });
 
         var labels = data.map(function(country) { return country.name });
-        
-        new Chartist.Line("#" + name, {
-            series: series
-        }, {
-            fullWidth: true,
-            chartPadding: {
-                right: 40
+
+        var maxDays = Math.max.apply(null, series.map(function(data) { return data.data.length } ));
+
+        var ctx = document.getElementById(name);
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: maxDays,
+                datasets: series
+            },
+            
+            options: {
+				        responsive: true,
+				        tooltips: {
+					          mode: 'index',
+					          intersect: false,
+				        },
+				        hover: {
+					          mode: 'nearest',
+					          intersect: true
+				        },
+				        scales: {
+					          xAxes: [{
+						            display: true,
+						            scaleLabel: {
+							              display: true,
+                            labelString: 'Día'
+						            }
+					          }],
+					          yAxes: [{
+						            display: true,
+						            scaleLabel: {
+							              display: true,
+							              labelString: 'Valor'
+						            }
+					          }]
+				        }
             }
-            //,
-            //plugins: [
-            //    Chartist.plugins.legend({
-            //        legendNames: labels
-            //    })
-            //]
         });
     }
 
@@ -105,104 +136,102 @@
     $(document).ready(function(e) {
         $.getJSON( "data/covid19.json")
             .done(function(data){
-//                $.getScript( "https://raw.githubusercontent.com/CodeYellowBV/chartist-plugin-legend/4e86f4352b0a3041f3a36c487499b1bec1108e56/chartist-plugin-legend.js", function(script, status, jqxhr ) {
-                    var allRecords = data.records;
+                var allRecords = data.records;
 
-                    var countries = [
-                        {
-                            "name": "España",
-                            "code": "ES"
-                        },
-                        {
-                            "name": "Italia",
-                            "code": "IT"
-                        }
-                    ];
+                var countries = [
+                    {
+                        "name": "España",
+                        "code": "ES"
+                    },
+                    {
+                        "name": "Italia",
+                        "code": "IT"
+                    }
+                ];
 
-                    var preparedData = countries.map(function(country) {
-                        var rawCountryData =  allRecords.filter(function(record) {return record.geoId === country.code} )
-                        var preparedCountryData = rawCountryData
-                            .map(function(record) {
-                                return {
-                                    "date": record.dateRep,
-                                    "cases": record.cases,
-                                    "casesPerMillion": (record.cases / record.popData2018) * 1000000,
-                                    "deaths": record.deaths,
-                                    "deathsPerMillion": (record.deaths / record.popData2018) * 1000000,
-                                    "population": record.popData2018
-                                }
-                            });
-                        var data = drop_until(preparedCountryData, function(record) { return record.cases >= 500 });
-                        var countryData = {
-                            "name": country.name,
-                            "code": country.code,
-                            "data": data
-                        };
-                        return countryData
-                    });
-
-                    var cases = preparedData.map(function(country) {
-                        var data = country.data.map(function(record) {
+                var preparedData = countries.map(function(country) {
+                    var rawCountryData =  allRecords.filter(function(record) {return record.geoId === country.code} )
+                    var preparedCountryData = rawCountryData
+                        .map(function(record) {
                             return {
-                                "date": record.date,
-                                "value": record.cases,
+                                "date": record.dateRep,
+                                "cases": record.cases,
+                                "casesPerMillion": (record.cases / record.popData2018) * 1000000,
+                                "deaths": record.deaths,
+                                "deathsPerMillion": (record.deaths / record.popData2018) * 1000000,
+                                "population": record.popData2018
                             }
                         });
+                    var data = drop_until(preparedCountryData, function(record) { return record.cases >= 500 });
+                    var countryData = {
+                        "name": country.name,
+                        "code": country.code,
+                        "data": data
+                    };
+                    return countryData
+                });
+
+                var cases = preparedData.map(function(country) {
+                    var data = country.data.map(function(record) {
                         return {
-                            "name": country.name,
-                            "code": country.code,
-                            "data": data
+                            "date": record.date,
+                            "value": record.cases,
                         }
                     });
+                    return {
+                        "name": country.name,
+                        "code": country.code,
+                        "data": data
+                    }
+                });
 
-                    var deaths = preparedData.map(function(country) {
-                        var data = country.data.map(function(record) {
-                            return {
-                                "date": record.date,
-                                "value": record.deaths,
-                            }
-                        });
+                var deaths = preparedData.map(function(country) {
+                    var data = country.data.map(function(record) {
                         return {
-                            "name": country.name,
-                            "code": country.code,
-                            "data": data
+                            "date": record.date,
+                            "value": record.deaths,
                         }
                     });
+                    return {
+                        "name": country.name,
+                        "code": country.code,
+                        "data": data
+                    }
+                });
 
-                    var casesPerMillion = preparedData.map(function(country) {
-                        var data = country.data.map(function(record) {
-                            return {
-                                "date": record.date,
-                                "value": record.casesPerMillion
-                            }
-                        });
+                var casesPerMillion = preparedData.map(function(country) {
+                    var data = country.data.map(function(record) {
                         return {
-                            "name": country.name,
-                            "code": country.code,
-                            "data": data
+                            "date": record.date,
+                            "value": record.casesPerMillion
                         }
                     });
+                    return {
+                        "name": country.name,
+                        "code": country.code,
+                        "data": data
+                    }
+                });
 
-                    var deathsPerMillion = preparedData.map(function(country) {
-                        var data = country.data.map(function(record) {
-                            return {
-                                "date": record.date,
-                                "value": record.deathsPerMillion
-                            }
-                        });
+                var deathsPerMillion = preparedData.map(function(country) {
+                    var data = country.data.map(function(record) {
                         return {
-                            "name": country.name,
-                            "code": country.code,
-                            "data": data
+                            "date": record.date,
+                            "value": record.deathsPerMillion
                         }
                     });
+                    return {
+                        "name": country.name,
+                        "code": country.code,
+                        "data": data
+                    }
+                });
 
-                    plot(cases, "caseschart");
-                    plot(deaths, "deathschart");
-                    plot(casesPerMillion, "casespermillionchart");
-                    plot(deathsPerMillion, "deathspermillionchart");                      
-                } );
-//            } );
+                plot(cases, "caseschart");
+                plot(deaths, "deathschart");
+                plot(casesPerMillion, "casespermillionchart");
+                plot(deathsPerMillion, "deathspermillionchart");                      
+            } );
     });
   </script>
 </html>
