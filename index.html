@@ -58,13 +58,22 @@
   </body>
   <script type="text/javascript">
     function plot(data, name){
+        var colours = [
+            "#2D221C",
+            "#E20045"
+        ];
         var series = data.map(function(country) {
             var name = country.name;
             var data = country.data.map(function(record) { return record.value });
             return {
                 "label":  name,
                 "data": data,
-                "fill": false                
+                "fill": false,
+                "backgroundColor": function(context) {
+                    var index = context.datasetIndex;
+                    var value = colours[index];
+                    return value
+                }
             };
         });
 
