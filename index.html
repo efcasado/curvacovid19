@@ -31,6 +31,7 @@
           padding-left: 10%;
           padding-right: 10%;
       }
+      
       </style>
   </head>
   <body>
@@ -60,7 +61,10 @@
     function plot(data, name){
         var colours = [
             "#2D221C",
-            "#E20045"
+            "#E20045",
+            "#E3AFBC",
+            "#EE4C7C",
+            "#9A1750"
         ];
         var series = data.map(function(country) {
             var name = country.name;
@@ -159,7 +163,20 @@
                     {
                         "name": "Italia",
                         "code": "IT"
+                    },
+                    {
+                        "name": "Alemania",
+                        "code": "DE"
+                    },
+                    {
+                        "name": "Reino Unido",
+                        "code": "UK"
+                    },
+                    {
+                        "name": "Estados Unidos",
+                        "code": "US"
                     }
+
                 ];
 
                 var preparedData = countries.map(function(country) {
