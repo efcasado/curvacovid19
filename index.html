@@ -12,15 +12,12 @@
       gtag('config', 'UA-61034120-2');
     </script>
     <!-- Chart.JS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
+    <link rel="stylesheet" href="vendors/chartjs/css/Chart.min.css">
+    <script src="vendors/chartjs/js/Chart.min.js"></script>
     <!-- jQuery -->
-    <script
-      src="https://code.jquery.com/jquery-3.4.1.min.js"
-      integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-      crossorigin="anonymous"></script>
+    <script src="vendors/jquery/js/jquery-3.4.1.min.js"></script>
     <!-- Oxygen Mono font -->
-    <link href="https://fonts.googleapis.com/css2?family=Oxygen+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="vendors/oxygenmono/css/oxygenmono.css">
     <style>
       .color1 { color: #2D221C; }
       .color2 { color: #E20045; }      
@@ -160,7 +157,7 @@
     }
     
     $(document).ready(function(e) {
-        $.getJSON( "data/covid19.json")
+        $.getJSON( "resources/data/covid19.json")
             .done(function(data){
                 var allRecords = data.records;
 
