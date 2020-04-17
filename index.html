@@ -11,6 +11,8 @@
       gtag('js', new Date());
       gtag('config', 'UA-61034120-2');
     </script>
+    <!-- mini.css -->
+    <link rel="stylesheet" href="vendors/minicss/css/mini-default.min.css">
     <!-- Chart.JS -->
     <link rel="stylesheet" href="vendors/chartjs/css/Chart.min.css">
     <script src="vendors/chartjs/js/Chart.min.js"></script>
@@ -31,33 +33,33 @@
       h1 {
           justify-content: center;
           text-align: center;
-          font-size:6vw;
       }
-      #content {
-          padding-left: 10%;
-          padding-right: 10%;
-      }
-      
       </style>
   </head>
   <body>
-    <div id="content">
-      <h1><span class="color1">CURVA</span> <span class="color2">COVID-19</span></h1>
-      <div id="charts">
-        <div>
-          <h2><span class="color1">Infecciones</span> <span class="color2">(Absolutas)</span></h2>
+    <h1><span class="color1">CURVA</span> <span class="color2">COVID-19</span></h1>
+    <div class="container">
+      <div class="row">
+        <div class="col">
+          <h3><span class="color1">Infecciones</span> <small class="color2">Absolutas</small></h3>
           <canvas id="caseschart"></canvas>
         </div>
-        <div>
-          <h2><span class="color1">Muertes</span> <span class="color2">(Absolutas)</span></h2>
+      </div>
+      <div class="row">
+        <div class="col">
+          <h3><span class="color1">Muertes</span> <small class="color2">Absolutas</small></h3>
           <canvas id="deathschart"></canvas>
         </div>
-        <div>
-          <h2><span class="color1">Infecciones</span> <span class="color2">(Por Millón de Habitantes)</span></h2>
+      </div>
+      <div class="row">
+        <div class="col">
+          <h3><span class="color1">Infecciones</span> <small class="color2">Por Millón de Habitantes</small></h3>
           <canvas id="casespermillionchart"></canvas>
         </div>
-        <div>
-          <h2><span class="color1">Muertes</span> <span class="color2">(Por Millón de Habitantes)</span></h2>
+      </div>
+      <div class="row">
+        <div class="col">
+          <h3><span class="color1">Muertes</span> <small class="color2">Por Millón de Habitantes</small></h3>
           <canvas id="deathspermillionchart"></canvas>
         </div>
       </div>
