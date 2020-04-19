@@ -11,6 +11,9 @@
       gtag('js', new Date());
       gtag('config', 'UA-61034120-2');
     </script>
+    <!--Materialize.css-->
+    <link rel="stylesheet" href="vendors/materialicons/css/materialicons.css">
+    <link type="text/css" rel="stylesheet" href="vendors/materialize/css/materialize.min.css"  media="screen,projection"/>
     <!-- Chart.JS -->
     <link rel="stylesheet" href="vendors/chartjs/css/Chart.min.css">
     <script src="vendors/chartjs/js/Chart.min.js"></script>
@@ -21,48 +24,77 @@
     <style>
       .color1 { color: #2D221C; }
       .color2 { color: #E20045; }      
-      html, body { height: 100%; }
-      html { display: table; margin: auto; }
       body {
-          display: table-cell;
-          vertical-align: middle;
           background-color: #E6E5E2; font-family: 'Oxygen Mono', monospace;
       }
-      h1 {
-          justify-content: center;
-          text-align: center;
-          font-size:6vw;
+      .chart-container {
+          position: relative;
+          margin: auto;
+          height: 40vh;
+          width: 80vw;
       }
-      #content {
-          padding-left: 10%;
-          padding-right: 10%;
+
+      .container {
+          padding: 0 0.5rem;
+          margin: 0 auto;
+          max-width: 100% !important;
+          width: 98%;
       }
-      
       </style>
   </head>
   <body>
-    <div id="content">
-      <h1><span class="color1">CURVA</span> <span class="color2">COVID-19</span></h1>
-      <div id="charts">
-        <div>
-          <h2><span class="color1">Infecciones</span> <span class="color2">(Absolutas)</span></h2>
-          <canvas id="caseschart"></canvas>
+    <div class="container">
+      <h1 class="center-align"><span class="color1">CURVA</span> <span class="color2">COVID-19</span></h1>
+      <div class="container">
+        <div class="section">
+          <h4 class="header"><span class="color1">Infecciones</span> <small class="color2">Absolutas</small></h4>
+          <div class="row">
+            <div class="col s1">
+              <div class="chart-container">
+                <canvas id="caseschart"></canvas>
+              </div>
+            </div>
+          </div>
         </div>
-        <div>
-          <h2><span class="color1">Muertes</span> <span class="color2">(Absolutas)</span></h2>
-          <canvas id="deathschart"></canvas>
+
+        <div class="section">
+          <h4 class="header"><span class="color1">Muertes</span> <small class="color2">Absolutas</small></h4>
+          <div class="row">
+            <div class="col s1">
+              <div class="chart-container">
+                <canvas id="deathschart"></canvas>
+              </div>
+            </div>
+          </div>
         </div>
-        <div>
-          <h2><span class="color1">Infecciones</span> <span class="color2">(Por Millón de Habitantes)</span></h2>
-          <canvas id="casespermillionchart"></canvas>
+
+
+        <div class="section">
+          <h4 class="header"><span class="color1">Infecciones</span> <small class="color2">Por Millón de Habitantes</small></h4>
+          <div class="row">
+            <div class="col s1">
+              <div class="chart-container">
+                <canvas id="casespermillionchart"></canvas>
+              </div>
+            </div>
+          </div>
         </div>
-        <div>
-          <h2><span class="color1">Muertes</span> <span class="color2">(Por Millón de Habitantes)</span></h2>
-          <canvas id="deathspermillionchart"></canvas>
+
+        <div class="section">
+          <h4 class="header"><span class="color1">Muertes</span> <small class="color2">Por Millón de Habitantes</small></h4>
+          <div class="row">
+            <div class="col s1">
+              <div class="chart-container">
+                <canvas id="deathspermillionchart"></canvas>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </body>
+  <!--JavaScript at end of body for optimized loading-->
+  <script type="text/javascript" src="vendors/materialize/js/materialize.min.js"></script>
   <script type="text/javascript">
     function plot(data, name){
         var colours = [
