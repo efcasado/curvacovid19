@@ -27,19 +27,17 @@
       body {
           background-color: #E6E5E2; font-family: 'Oxygen Mono', monospace;
       }
+
+      .section {
+          display: block;
+      }
+      
       .chart-container {
           position: relative;
           margin: auto;
-          height: 40vh;
-          width: 80vw;
+          width: 100%;
       }
 
-      .container {
-          padding: 0 0.5rem;
-          margin: 0 auto;
-          max-width: 100% !important;
-          width: 98%;
-      }
       </style>
   </head>
   <body>
@@ -48,46 +46,29 @@
       <div class="container">
         <div class="section">
           <h4 class="header"><span class="color1">Infecciones</span> <small class="color2">Absolutas</small></h4>
-          <div class="row">
-            <div class="col s1">
-              <div class="chart-container">
-                <canvas id="caseschart"></canvas>
-              </div>
-            </div>
+          <div class="chart-container">
+            <canvas id="caseschart"></canvas>
           </div>
         </div>
 
         <div class="section">
           <h4 class="header"><span class="color1">Muertes</span> <small class="color2">Absolutas</small></h4>
-          <div class="row">
-            <div class="col s1">
-              <div class="chart-container">
-                <canvas id="deathschart"></canvas>
-              </div>
-            </div>
+          <div class="chart-container">
+            <canvas id="deathschart"></canvas>
           </div>
         </div>
 
-
         <div class="section">
           <h4 class="header"><span class="color1">Infecciones</span> <small class="color2">Por Millón de Habitantes</small></h4>
-          <div class="row">
-            <div class="col s1">
-              <div class="chart-container">
-                <canvas id="casespermillionchart"></canvas>
-              </div>
-            </div>
+          <div class="chart-container">
+            <canvas id="casespermillionchart"></canvas>
           </div>
         </div>
 
         <div class="section">
           <h4 class="header"><span class="color1">Muertes</span> <small class="color2">Por Millón de Habitantes</small></h4>
-          <div class="row">
-            <div class="col s1">
-              <div class="chart-container">
-                <canvas id="deathspermillionchart"></canvas>
-              </div>
-            </div>
+          <div class="chart-container">
+            <canvas id="deathspermillionchart"></canvas>
           </div>
         </div>
       </div>
